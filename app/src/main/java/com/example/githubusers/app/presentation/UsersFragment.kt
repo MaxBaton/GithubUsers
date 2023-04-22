@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -14,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.example.githubusers.R
 import com.example.githubusers.app.presentation.viewmodel.UserViewModel
 import com.example.githubusers.databinding.FragmentUsersBinding
+import com.example.githubusers.databinding.HeaderUserItemBinding
 import com.example.githubusers.databinding.UserItemLayoutBinding
 import com.example.githubusers.domain.models.User
 import com.xwray.groupie.GroupieAdapter
@@ -26,6 +28,7 @@ class UsersFragment: Fragment() {
     // Recycler
     private val groupieAdapter = GroupieAdapter()
     private val section = Section()
+    private var initialList: List<UserItem>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +43,11 @@ class UsersFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         with(binding ?: return) {
+            section.apply {
+                setHeader(HeaderUserItem())
+                //setHideWhenEmpty(true)
+            }
+
             groupieAdapter.add(section)
 
             recyclerViewUsers.apply {
@@ -64,6 +72,7 @@ class UsersFragment: Fragment() {
                 users?.forEach {
                     usersItem.add(UserItem(user = it))
                 }
+                initialList = usersItem
 
                 section.update(usersItem)
             }
@@ -80,6 +89,23 @@ class UsersFragment: Fragment() {
                         Toast.makeText(requireContext(), "Ошибка получения данных о пользователе", Toast.LENGTH_SHORT).show()
                     }
                 )
+            }
+        }
+    }
+
+    private fun filterUserInfo(info: String) {
+        if (info.isEmpty()) {
+            initialList?.let {
+                section.update(it)
+            }
+        }else {
+            initialList?.let {
+                val filteredList = it.filter { userItem ->
+                    val user = userItem.user
+                    user.login.toUpperCase().contains(info.toUpperCase()) ||
+                        user.id.toString().toUpperCase().contains(info.toUpperCase())
+                }
+                section.update(filteredList)
             }
         }
     }
@@ -106,6 +132,31 @@ class UsersFragment: Fragment() {
         override fun getLayout() = R.layout.user_item_layout
 
         override fun initializeViewBinding(view: View) = UserItemLayoutBinding.bind(view)
+
+    }
+
+    inner class HeaderUserItem: BindableItem<HeaderUserItemBinding>() {
+        override fun bind(viewBinding: HeaderUserItemBinding, position: Int) {
+            with(viewBinding) {
+                searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        return true
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        newText?.let { str ->
+                            filterUserInfo(info = str.trim())
+                        }
+                        return true
+                    }
+
+                })
+            }
+        }
+
+        override fun getLayout() = R.layout.header_user_item
+
+        override fun initializeViewBinding(view: View) = HeaderUserItemBinding.bind(view)
 
     }
 }
