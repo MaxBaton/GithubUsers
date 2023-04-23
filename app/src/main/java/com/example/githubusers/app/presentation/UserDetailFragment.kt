@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.githubusers.app.presentation.viewmodel.UserViewModel
 import com.example.githubusers.databinding.FragmentUserDetailBinding
@@ -28,6 +30,8 @@ class UserDetailFragment: Fragment() {
 
         with(binding ?: return) {
             userViewModel.userDetailLiveData.observe(viewLifecycleOwner) { userDetail ->
+                (requireActivity() as AppCompatActivity).supportActionBar?.title = userDetail.name
+
                 Glide
                     .with(requireContext())
                     .load(userDetail.avatar_url)

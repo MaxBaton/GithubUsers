@@ -1,6 +1,8 @@
 package com.example.githubusers.app.presentation
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +31,6 @@ class UsersFragment: Fragment() {
     private val groupieAdapter = GroupieAdapter()
     private val section = Section()
     private var initialList: List<UserItem>? = null
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,13 +40,13 @@ class UsersFragment: Fragment() {
         return binding?.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         with(binding ?: return) {
             section.apply {
                 setHeader(HeaderUserItem())
-                //setHideWhenEmpty(true)
             }
 
             groupieAdapter.add(section)
@@ -56,17 +57,6 @@ class UsersFragment: Fragment() {
                 addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
             }
 
-            userViewModel.getAllUsers(
-                onSuccess = {
-                    progressBar.visibility = View.GONE
-                    Toast.makeText(requireContext(), "Успешная загрузка пользователей", Toast.LENGTH_SHORT).show()
-                },
-                onError = {
-                    progressBar.visibility = View.GONE
-                    Toast.makeText(requireContext(), "Ошибка загрузки пользователей", Toast.LENGTH_SHORT).show()
-                }
-            )
-
             userViewModel.usersLiveData.observe(viewLifecycleOwner) { users ->
                 val usersItem = mutableListOf<UserItem>()
                 users?.forEach {
@@ -75,6 +65,22 @@ class UsersFragment: Fragment() {
                 initialList = usersItem
 
                 section.update(usersItem)
+            }
+
+            if (userViewModel.usersLiveData.value == null ||
+                userViewModel.usersLiveData.value?.isEmpty() == true
+            ) {
+                userViewModel.getAllUsers(
+                    onSuccess = {
+                        progressBar.visibility = View.GONE
+                    },
+                    onError = {
+                        progressBar.visibility = View.GONE
+                        Toast.makeText(requireContext(), "Ошибка загрузки пользователей", Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }else {
+                progressBar.visibility = View.GONE
             }
 
             groupieAdapter.setOnItemClickListener { item, view ->

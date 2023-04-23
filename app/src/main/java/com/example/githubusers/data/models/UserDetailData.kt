@@ -6,7 +6,7 @@ data class UserDetailData(
     val blog: String,
     val company: String?,
     val created_at: String,
-    val email: Any?,
+    val email: String?,
     val events_url: String,
     val followers: Int,
     val followers_url: String,
@@ -29,7 +29,7 @@ data class UserDetailData(
     val site_admin: Boolean,
     val starred_url: String,
     val subscriptions_url: String,
-    val twitter_username: Any?,
+    val twitter_username: String?,
     val type: String,
     val updated_at: String,
     val url: String
