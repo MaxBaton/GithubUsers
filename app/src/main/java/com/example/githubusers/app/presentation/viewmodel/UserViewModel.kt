@@ -18,7 +18,9 @@ class UserViewModel @Inject constructor(
     private val getAllUsersFromDb: GetAllUsersFromDb,
     private val getUserDetail: GetUserDetail,
     private val saveUsers: SaveUsers,
-    private val deleteUsersFromDb: DeleteUsersFromDb
+    private val deleteUsersFromDb: DeleteUsersFromDb,
+    private val saveUserDetail: SaveUserDetail,
+    private val getUserDetailFromDb: GetUserDetailFromDb
 ): ViewModel() {
     private companion object {
         const val SAVE_USER_COUNT = 10
@@ -50,8 +52,8 @@ class UserViewModel @Inject constructor(
             val userDetail = getUserDetail.getByLogin(login = login)
             CoroutineScope(Dispatchers.Main).launch {
                 if (userDetail != null) {
-                    onSuccess()
                     userDetail?.let { mutableUserDetailLiveData.value = it }
+                    onSuccess()
                 }else {
                     onError()
                 }
@@ -100,6 +102,27 @@ class UserViewModel @Inject constructor(
             val isDelete = deleteUsersFromDb.delete()
             CoroutineScope(Dispatchers.Main).launch {
                 if (isDelete) {
+                    onSuccess()
+                }else {
+                    onError()
+                }
+            }
+        }
+    }
+
+    fun saveUserDetailToDb() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val userDetail = userDetailLiveData.value
+            userDetail?.let { saveUserDetail.save(userDetail = it) }
+        }
+    }
+
+    fun getUserDetailFromDb(login: String, onSuccess: () -> Unit, onError: () -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val userDetail = getUserDetailFromDb.getByLogin(login = login)
+            CoroutineScope(Dispatchers.Main).launch {
+                if (userDetail != null) {
+                    userDetail?.let { mutableUserDetailLiveData.value = it }
                     onSuccess()
                 }else {
                     onError()

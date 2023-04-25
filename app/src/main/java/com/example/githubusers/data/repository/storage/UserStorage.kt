@@ -11,4 +11,6 @@ interface UserStorage {
     suspend fun saveUsers(usersData: List<UserData>): Boolean
 
     suspend fun deleteAllUsers(): Boolean
+
+    suspend fun saveUserDetailToDb(userDetailData: UserDetailData): Boolean
 }

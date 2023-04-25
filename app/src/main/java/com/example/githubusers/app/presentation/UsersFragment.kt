@@ -104,10 +104,19 @@ class UsersFragment: Fragment() {
                 userViewModel.getUserDetail(
                     login = login,
                     onSuccess = {
+                        userViewModel.saveUserDetailToDb()
                         findNavController().navigate(R.id.action_usersFragment_to_userDetailFragment)
                     },
                     onError = {
-                        Toast.makeText(requireContext(), "Ошибка получения данных о пользователе", Toast.LENGTH_SHORT).show()
+                        userViewModel.getUserDetailFromDb(
+                            login = login,
+                            onSuccess = {
+                                findNavController().navigate(R.id.action_usersFragment_to_userDetailFragment)
+                            },
+                            onError = {
+                                Toast.makeText(requireContext(), "Ошибка получения данных о пользователе", Toast.LENGTH_SHORT).show()
+                            }
+                        )
                     }
                 )
             }
@@ -146,6 +155,7 @@ class UsersFragment: Fragment() {
                 Glide
                     .with(requireContext())
                     .load(user.avatar_url)
+                    .placeholder(R.drawable.icon_update)
                     .into(imageViewAvatar)
             }
         }

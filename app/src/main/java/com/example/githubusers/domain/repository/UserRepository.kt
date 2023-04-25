@@ -11,4 +11,6 @@ interface UserRepository {
     suspend fun saveUsers(users: List<User>): Boolean
 
     suspend fun deleteAllUsers(): Boolean
+
+    suspend fun saveUserDetailToDb(userDetail: UserDetail): Boolean
 }

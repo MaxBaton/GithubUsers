@@ -3,6 +3,7 @@ package com.example.githubusers.data.repository
 import com.example.githubusers.data.mappers.mapToListUser
 import com.example.githubusers.data.mappers.mapToListUserData
 import com.example.githubusers.data.mappers.mapToUserDetail
+import com.example.githubusers.data.mappers.mapToUserDetailData
 import com.example.githubusers.data.repository.storage.UserStorage
 import com.example.githubusers.domain.models.User
 import com.example.githubusers.domain.models.UserDetail
@@ -25,4 +26,8 @@ class UserRepositoryImpl(private val userStorage: UserStorage): UserRepository {
     }
 
     override suspend fun deleteAllUsers() = userStorage.deleteAllUsers()
+    override suspend fun saveUserDetailToDb(userDetail: UserDetail): Boolean {
+        val userDetailData = userDetail.mapToUserDetailData()
+        return userStorage.saveUserDetailToDb(userDetailData = userDetailData)
+    }
 }

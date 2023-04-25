@@ -51,4 +51,20 @@ class DomainModule {
     ): DeleteUsersFromDb {
         return DeleteUsersFromDb(userRepository = userRepository)
     }
+
+    @Provides
+    fun provideSaveUserDetail(
+        @UserDbRepository
+        userRepository: UserRepository
+    ): SaveUserDetail {
+        return SaveUserDetail(userRepository = userRepository)
+    }
+
+    @Provides
+    fun provideGetUserDetailFromDb(
+        @UserDbRepository
+        userRepository: UserRepository
+    ): GetUserDetailFromDb {
+        return GetUserDetailFromDb(userRepository = userRepository)
+    }
 }

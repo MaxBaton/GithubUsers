@@ -2,6 +2,7 @@ package com.example.githubusers.app.presentation.di.data
 
 import com.example.githubusers.data.database.AppDatabase
 import com.example.githubusers.data.database.user.UserDao
+import com.example.githubusers.data.database.user.UserDetailDao
 import com.example.githubusers.data.network.UserApi
 import com.example.githubusers.data.repository.UserRepositoryImpl
 import com.example.githubusers.data.repository.storage.UserNetworkStorage
@@ -31,9 +32,18 @@ class DataModule {
 
     @Provides
     @Singleton
+    fun provideUserDetailDao(db: AppDatabase): UserDetailDao {
+        return db.userDetailDao()
+    }
+
+    @Provides
+    @Singleton
     @UserDbStorage
-    fun provideUserDbStorage(userDao: UserDao): UserStorage {
-        return com.example.githubusers.data.repository.storage.UserDbStorage(userDao = userDao)
+    fun provideUserDbStorage(userDao: UserDao, userDetailDao: UserDetailDao): UserStorage {
+        return com.example.githubusers.data.repository.storage.UserDbStorage(
+            userDao = userDao,
+            userDetailDao = userDetailDao
+        )
     }
 
     @Provides

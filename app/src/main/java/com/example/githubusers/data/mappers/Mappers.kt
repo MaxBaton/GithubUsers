@@ -60,3 +60,17 @@ fun UserDetailData.mapToUserDetail(): UserDetail {
         url = this.url
     )
 }
+
+fun UserDetail.mapToUserDetailData(): UserDetailData {
+    return UserDetailData(
+        avatar_url = this.avatar_url,
+        email = this.email,
+        id = this.id,
+        location = this.location,
+        login = this.login,
+        name = this.name,
+        organizations_url = this.organizations_url,
+        twitter_username = this.twitter_username,
+        url = this.url
+    )
+}
