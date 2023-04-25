@@ -16,6 +16,11 @@ class UserDetailFragment: Fragment() {
     private var binding: FragmentUserDetailBinding? = null
     private val userViewModel: UserViewModel by activityViewModels()
 
+    companion object {
+        private const val UNKNOWN_NAME = "Неизвестное имя"
+        private const val UNKNOWN_LOCATION  = "Неизвестная локация"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -30,7 +35,7 @@ class UserDetailFragment: Fragment() {
 
         with(binding ?: return) {
             userViewModel.userDetailLiveData.observe(viewLifecycleOwner) { userDetail ->
-                (requireActivity() as AppCompatActivity).supportActionBar?.title = userDetail.name
+                (requireActivity() as AppCompatActivity).supportActionBar?.title = userDetail.name ?: UNKNOWN_NAME
 
                 Glide
                     .with(requireContext())
@@ -38,7 +43,7 @@ class UserDetailFragment: Fragment() {
                     .into(imageViewAvatar)
 
                 textViewLogin.text = userDetail.login
-                textViewLocation.text = userDetail.location
+                textViewLocation.text = userDetail.location ?: UNKNOWN_LOCATION
             }
 
         }
