@@ -1,5 +1,7 @@
 package com.example.githubusers.app.presentation.di.data
 
+import com.example.githubusers.data.database.AppDatabase
+import com.example.githubusers.data.database.user.UserDao
 import com.example.githubusers.data.network.UserApi
 import com.example.githubusers.data.repository.UserRepositoryImpl
 import com.example.githubusers.data.repository.storage.UserNetworkStorage
@@ -23,13 +25,41 @@ class DataModule {
 
     @Provides
     @Singleton
+    fun provideUserDao(db: AppDatabase): UserDao {
+        return db.userDao()
+    }
+
+    @Provides
+    @Singleton
+    @UserDbStorage
+    fun provideUserDbStorage(userDao: UserDao): UserStorage {
+        return com.example.githubusers.data.repository.storage.UserDbStorage(userDao = userDao)
+    }
+
+    @Provides
+    @Singleton
+    @com.example.githubusers.app.presentation.di.data.UserNetworkStorage
     fun provideUserNetworkStorage(userApi: UserApi): UserStorage {
         return UserNetworkStorage(userApi = userApi)
     }
 
     @Provides
     @Singleton
-    fun provideUserRepository(userStorage: UserStorage): UserRepository {
+    @UserNetworkRepository
+    fun provideUserNetworkRepository(
+        @com.example.githubusers.app.presentation.di.data.UserNetworkStorage
+        userStorage: UserStorage
+    ): UserRepository {
+        return UserRepositoryImpl(userStorage = userStorage)
+    }
+
+    @Provides
+    @Singleton
+    @UserDbRepository
+    fun provideUserDbRepository(
+        @com.example.githubusers.app.presentation.di.data.UserDbStorage
+        userStorage: UserStorage
+    ): UserRepository {
         return UserRepositoryImpl(userStorage = userStorage)
     }
 }

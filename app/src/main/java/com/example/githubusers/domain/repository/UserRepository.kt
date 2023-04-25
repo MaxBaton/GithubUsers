@@ -7,4 +7,8 @@ interface UserRepository {
     suspend fun getAllUsers(): List<User>?
 
     suspend fun getUserDetailByLogin(login: String): UserDetail?
+
+    suspend fun saveUsers(users: List<User>): Boolean
+
+    suspend fun deleteAllUsers(): Boolean
 }

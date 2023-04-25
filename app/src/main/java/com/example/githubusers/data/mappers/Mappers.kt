@@ -17,10 +17,31 @@ fun UserData.mapToUser(): User {
     )
 }
 
+fun User.mapToUserData(): UserData {
+    return UserData(
+        avatar_url = this.avatar_url,
+        id = this.id,
+        login  = this.login,
+        organizations_url = this.organizations_url,
+        repos_url = this.repos_url,
+        site_admin = this.site_admin,
+        url = this.url
+    )
+}
+
 fun List<UserData>.mapToListUser(): List<User> {
     val list = mutableListOf<User>()
     this.forEach {
         list.add(it.mapToUser())
+    }
+
+    return list
+}
+
+fun List<User>.mapToListUserData(): List<UserData> {
+    val list = mutableListOf<UserData>()
+    this.forEach {
+        list.add(it.mapToUserData())
     }
 
     return list

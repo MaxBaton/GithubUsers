@@ -73,10 +73,25 @@ class UsersFragment: Fragment() {
                 userViewModel.getAllUsers(
                     onSuccess = {
                         progressBar.visibility = View.GONE
+                        userViewModel.deleteAllUsersFromDb(
+                            onSuccess = {
+                                userViewModel.saveFirstTenUsers()
+                            },
+                            onError = {
+
+                            }
+                        )
                     },
                     onError = {
                         progressBar.visibility = View.GONE
-                        Toast.makeText(requireContext(), "Ошибка загрузки пользователей", Toast.LENGTH_SHORT).show()
+                        userViewModel.getAllUsersFromDb(
+                            onSuccess = {
+                                Toast.makeText(requireContext(), "Ошибка загрузки. Вы работаете в офлайн режиме", Toast.LENGTH_SHORT).show()
+                            },
+                            onError = {
+                                Toast.makeText(requireContext(), "Ошибка загрузки пользователей", Toast.LENGTH_SHORT).show()
+                            }
+                        )
                     }
                 )
             }else {

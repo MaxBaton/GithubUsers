@@ -1,37 +1,39 @@
 package com.example.githubusers.data.repository.storage
 
+import com.example.githubusers.data.database.user.UserDao
 import com.example.githubusers.data.models.UserData
 import com.example.githubusers.data.models.UserDetailData
-import com.example.githubusers.data.network.UserApi
 
-class UserNetworkStorage(private val userApi: UserApi): UserStorage {
-    private companion object {
-        const val MY_TOKEN = "12d"
-    }
-
+class UserDbStorage(private val userDao: UserDao): UserStorage {
     override suspend fun getAllUsers(): List<UserData>? {
         return try {
-            val userData = userApi.getAllUsers(token = MY_TOKEN)
-            userData
+            userDao.getUsers()
         }catch (e: Exception) {
             null
         }
     }
 
     override suspend fun getUserDetailByLogin(login: String): UserDetailData? {
-        return try {
-            val userDetail = userApi.getUserDetailByLogin(login = login)
-            userDetail
-        }catch (e: Exception) {
-            null
-        }
+        TODO("Not yet implemented")
     }
 
     override suspend fun saveUsers(usersData: List<UserData>): Boolean {
-        TODO("Not yet implemented")
+        return try {
+            usersData.forEach {
+                userDao.add(userData = it)
+            }
+            true
+        }catch (e: Exception) {
+            false
+        }
     }
 
     override suspend fun deleteAllUsers(): Boolean {
-        TODO("Not yet implemented")
+        return try {
+            userDao.clear()
+            true
+        }catch (e: Exception) {
+            false
+        }
     }
 }
