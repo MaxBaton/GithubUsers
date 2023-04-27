@@ -75,10 +75,18 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun saveFirstTenUsers() {
+    fun saveFirstTenUsersWithDetails() {
         CoroutineScope(Dispatchers.IO).launch {
             val users = getFirstTenUsers()
             val isSave = saveUsers.saveUsers(users = users)
+            if (isSave) {
+                users.forEach { user ->
+                    val userDetail = getUserDetail.getByLogin(user.login)
+                    userDetail?.let {
+                        saveUserDetail.save(userDetail = it)
+                    }
+                }
+            }
         }
     }
 

@@ -7,6 +7,8 @@ import com.example.githubusers.data.network.UserApi
 import com.example.githubusers.data.repository.UserRepositoryImpl
 import com.example.githubusers.data.repository.storage.UserNetworkStorage
 import com.example.githubusers.data.repository.storage.UserStorage
+import com.example.githubusers.data.repository.storage.operations.UserAdditionalOperations
+import com.example.githubusers.data.repository.storage.operations.UsersAdditionalDbOperationsImpl
 import com.example.githubusers.domain.repository.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -58,9 +60,13 @@ class DataModule {
     @UserNetworkRepository
     fun provideUserNetworkRepository(
         @com.example.githubusers.app.presentation.di.data.UserNetworkStorage
-        userStorage: UserStorage
+        userStorage: UserStorage,
+        userAdditionalOperations: UserAdditionalOperations
     ): UserRepository {
-        return UserRepositoryImpl(userStorage = userStorage)
+        return UserRepositoryImpl(
+            userStorage = userStorage,
+            userAdditionalOperations = userAdditionalOperations
+        )
     }
 
     @Provides
@@ -68,8 +74,24 @@ class DataModule {
     @UserDbRepository
     fun provideUserDbRepository(
         @com.example.githubusers.app.presentation.di.data.UserDbStorage
-        userStorage: UserStorage
+        userStorage: UserStorage,
+        userAdditionalOperations: UserAdditionalOperations
     ): UserRepository {
-        return UserRepositoryImpl(userStorage = userStorage)
+        return UserRepositoryImpl(
+            userStorage = userStorage,
+            userAdditionalOperations = userAdditionalOperations
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserDbOperations(
+        userDao: UserDao,
+        userDetailDao: UserDetailDao
+    ): UserAdditionalOperations {
+        return UsersAdditionalDbOperationsImpl(
+            userDao = userDao,
+            userDetailDao = userDetailDao
+        )
     }
 }

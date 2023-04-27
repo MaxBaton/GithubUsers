@@ -1,8 +1,6 @@
 package com.example.githubusers.app.presentation
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,7 +73,7 @@ class UsersFragment: Fragment() {
                         progressBar.visibility = View.GONE
                         userViewModel.deleteAllUsersFromDb(
                             onSuccess = {
-                                userViewModel.saveFirstTenUsers()
+                                userViewModel.saveFirstTenUsersWithDetails()
                             },
                             onError = {
 
@@ -104,7 +102,6 @@ class UsersFragment: Fragment() {
                 userViewModel.getUserDetail(
                     login = login,
                     onSuccess = {
-                        userViewModel.saveUserDetailToDb()
                         findNavController().navigate(R.id.action_usersFragment_to_userDetailFragment)
                     },
                     onError = {
