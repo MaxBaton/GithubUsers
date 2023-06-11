@@ -97,25 +97,26 @@ class UsersFragment: Fragment() {
             }
 
             groupieAdapter.setOnItemClickListener { item, view ->
-                val userItem = item as UserItem
-                val login = userItem.user.login
-                userViewModel.getUserDetail(
-                    login = login,
-                    onSuccess = {
-                        findNavController().navigate(R.id.action_usersFragment_to_userDetailFragment)
-                    },
-                    onError = {
-                        userViewModel.getUserDetailFromDb(
-                            login = login,
-                            onSuccess = {
-                                findNavController().navigate(R.id.action_usersFragment_to_userDetailFragment)
-                            },
-                            onError = {
-                                Toast.makeText(requireContext(), "Ошибка получения данных о пользователе", Toast.LENGTH_SHORT).show()
-                            }
-                        )
-                    }
-                )
+                if (item is UserItem) {
+                    val login = item.user.login
+                    userViewModel.getUserDetail(
+                        login = login,
+                        onSuccess = {
+                            findNavController().navigate(R.id.action_usersFragment_to_userDetailFragment)
+                        },
+                        onError = {
+                            userViewModel.getUserDetailFromDb(
+                                login = login,
+                                onSuccess = {
+                                    findNavController().navigate(R.id.action_usersFragment_to_userDetailFragment)
+                                },
+                                onError = {
+                                    Toast.makeText(requireContext(), "Ошибка получения данных о пользователе", Toast.LENGTH_SHORT).show()
+                                }
+                            )
+                        }
+                    )
+                }
             }
         }
     }
